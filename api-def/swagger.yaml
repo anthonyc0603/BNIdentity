@@ -1,0 +1,264 @@
+{
+  "openapi" : "3.0.3",
+  "info" : {
+    "title" : "RLN API - OpenAPI 3.0",
+    "description" : "This API exposes key functions for the RLN UK Pilot.  Users have access to three transaction endpoints and to a balance query endpoint. Access is secured via an API key.",
+    "version" : "1.0-oas3"
+  },
+  "servers" : [ {
+    "url" : "https://virtserver.swaggerhub.com/ANTHONYCULLIGAN/RLN/1.0",
+    "description" : "SwaggerHub API Auto Mocking"
+  }, {
+    "url" : "https://location"
+  } ],
+  "security" : [ {
+    "ApiKeyAuth" : [ ]
+  } ],
+  "tags" : [ {
+    "name" : "transactions",
+    "description" : "Transaction endpoints"
+  }, {
+    "name" : "balances",
+    "description" : "Balances endpoints"
+  } ],
+  "paths" : {
+    "/api/create" : {
+      "post" : {
+        "tags" : [ "transactions" ],
+        "summary" : "Create Transaction",
+        "description" : "This call will create a transaction on the RLN.",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CreateTransaction"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful Operation"
+          }
+        }
+      }
+    },
+    "/api/approval/list" : {
+      "get" : {
+        "tags" : [ "transactions" ],
+        "summary" : "Get Approval List",
+        "description" : "Get Approval List",
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ApprovalList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/approval/status" : {
+      "post" : {
+        "tags" : [ "transactions" ],
+        "summary" : "Update approval decision",
+        "description" : "Update approval decision",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/UpdateApproval"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation"
+          }
+        }
+      }
+    },
+    "/api/balance/{walletId}" : {
+      "get" : {
+        "tags" : [ "balances" ],
+        "summary" : "Get Balances",
+        "description" : "Get Balances",
+        "parameters" : [ {
+          "name" : "walletId",
+          "in" : "path",
+          "description" : "Numeric ID of the Wallet to get balances for",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful operation",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Balance"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "CreateTransaction" : {
+        "type" : "object",
+        "properties" : {
+          "from" : {
+            "type" : "string",
+            "example" : "Test-participant-1"
+          },
+          "groups" : {
+            "$ref" : "#/components/schemas/CreateTransaction_groups"
+          }
+        }
+      },
+      "ApprovalList" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "example" : 2
+          },
+          "transactionId" : {
+            "type" : "string",
+            "example" : "0182364d0b0e74ea-8f4b602cbf267fe1"
+          },
+          "groupId" : {
+            "type" : "string",
+            "example" : "0182364d0b0d7e57-99f1725afb816b4a"
+          },
+          "messageId" : {
+            "type" : "string",
+            "example" : "0182364d0b0e74e9-8db617f1cf948cc7"
+          },
+          "address" : {
+            "type" : "string",
+            "example" : "rM1zpnuCquHc0k3Dw7lc8nagFQ1"
+          },
+          "partyCode" : {
+            "type" : "string",
+            "example" : "DP2TSUT6"
+          },
+          "balance" : {
+            "type" : "number",
+            "example" : 100000000
+          },
+          "status" : {
+            "type" : "string",
+            "example" : "WAITING"
+          }
+        }
+      },
+      "UpdateApproval" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "example" : 2
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Can be APPROVE or REJECT",
+            "example" : "APPROVE"
+          }
+        }
+      },
+      "Balance" : {
+        "type" : "object",
+        "properties" : {
+          "address" : {
+            "type" : "string",
+            "example" : "rM1zpnuCquHc0k3Dw7lc8nagFQ1"
+          },
+          "assetId" : {
+            "type" : "integer",
+            "example" : 2
+          },
+          "assetName" : {
+            "type" : "string",
+            "example" : "US Dollar"
+          },
+          "type" : {
+            "type" : "string",
+            "example" : "ACTUAL"
+          },
+          "balance" : {
+            "type" : "number",
+            "example" : 10000000000
+          }
+        }
+      },
+      "CreateTransaction_groups_creditor" : {
+        "type" : "object",
+        "properties" : {
+          "account" : {
+            "type" : "string",
+            "example" : "Use a valid IBAN"
+          },
+          "agent" : {
+            "type" : "string",
+            "example" : "Use a valid BIC"
+          }
+        },
+        "example" : null
+      },
+      "CreateTransaction_groups_transaction" : {
+        "type" : "object",
+        "properties" : {
+          "amount" : {
+            "type" : "number",
+            "example" : 18.5
+          },
+          "creditor" : {
+            "$ref" : "#/components/schemas/CreateTransaction_groups_creditor"
+          },
+          "currency" : {
+            "type" : "string",
+            "example" : "USD"
+          },
+          "debtor" : {
+            "$ref" : "#/components/schemas/CreateTransaction_groups_creditor"
+          }
+        },
+        "example" : null
+      },
+      "CreateTransaction_groups" : {
+        "type" : "object",
+        "properties" : {
+          "transaction" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CreateTransaction_groups_transaction"
+            }
+          }
+        },
+        "example" : null
+      }
+    },
+    "securitySchemes" : {
+      "ApiKeyAuth" : {
+        "type" : "apiKey",
+        "name" : "X-API-KEY",
+        "in" : "header"
+      }
+    }
+  }
+}
